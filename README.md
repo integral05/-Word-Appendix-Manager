@@ -560,9 +560,9 @@ python src/main.py --debug
 
 ## 🌟 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/word-appendix-manager&type=Date)](https://star-history.com/#yourusername/word-appendix-manager&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/word-appendix-manager&type=Date)](https://star-history.com/integral05/word-appendix-manager&Date)
 
-**Made with ❤️ by [Your Name]**
+**Made with ❤️ by Integral**
 
 *If this project helped you, please consider giving it a ⭐ star!*
 
