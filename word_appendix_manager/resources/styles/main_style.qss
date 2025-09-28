@@ -1,1 +1,27 @@
- 
+# src/__init__.py
+"""Word Appendix Manager - Main Package"""
+
+# src/config/__init__.py
+"""Configuration Package"""
+from .settings import AppSettings
+from .constants import *
+
+# src/utils/__init__.py  
+"""Utilities Package"""
+from .logger import setup_logging, get_logger, LoggerMixin
+from .exceptions import *
+
+# src/core/__init__.py
+"""Core Business Logic Package"""
+from .word_manager import WordManager
+from .pdf_handler import PDFHandler
+from .appendix_manager import AppendixManager
+
+# src/gui/__init__.py
+"""GUI Package - will be populated later"""
+
+# src/gui/widgets/__init__.py
+"""GUI Widgets Package - will be populated later"""
+
+# src/gui/dialogs/__init__.py
+"""GUI Dialogs Package - will be populated later"""
