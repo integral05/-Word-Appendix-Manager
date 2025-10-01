@@ -21,6 +21,7 @@ if str(src_dir) not in sys.path:
 
 from utils.logger import setup_logging
 from utils.exceptions import ApplicationError
+from utils.theme_manager import ThemeManager
 from config.settings import AppSettings
 from gui.main_window import MainWindow
 from gui.controller import AppController
@@ -34,6 +35,7 @@ class WordAppendixManager:
         self.main_window = None
         self.controller = None
         self.settings = None
+        self.theme_manager = None
         
     def initialize_application(self):
         """Initialize the Qt application with proper settings."""
@@ -65,8 +67,11 @@ class WordAppendixManager:
             # Load application settings
             self.settings = AppSettings()
             
-            # Apply application theme
-            self._apply_theme()
+            # Initialize theme manager
+            self.theme_manager = ThemeManager(self.settings)
+            
+            # Apply saved theme or default
+            self.theme_manager.load_saved_theme()
             
         except Exception as e:
             self._show_error(f"Failed to initialize application components: {str(e)}")
@@ -77,7 +82,7 @@ class WordAppendixManager:
     def create_main_window(self):
         """Create and configure the main application window."""
         try:
-            self.main_window = MainWindow(settings=self.settings)
+            self.main_window = MainWindow(settings=self.settings, theme_manager=self.theme_manager)
             
             # Create controller to handle business logic
             self.controller = AppController(self.main_window, self.settings)
@@ -92,18 +97,6 @@ class WordAppendixManager:
             return False
             
         return True
-    
-    def _apply_theme(self):
-        """Apply the application theme/stylesheet."""
-        try:
-            # Load main stylesheet
-            style_path = self._get_resource_path("styles/main_style.qss")
-            if style_path and os.path.exists(style_path):
-                with open(style_path, 'r', encoding='utf-8') as f:
-                    stylesheet = f.read()
-                    self.app.setStyleSheet(stylesheet)
-        except Exception as e:
-            print(f"Warning: Could not load stylesheet: {e}")
     
     def _center_window(self):
         """Center the main window on the screen."""

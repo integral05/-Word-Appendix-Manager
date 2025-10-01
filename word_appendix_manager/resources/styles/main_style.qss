@@ -1,27 +1,68 @@
-# src/__init__.py
-"""Word Appendix Manager - Main Package"""
+/*
+===============================================================================
+LIGHT THEME STYLESHEET (Main Style)
+Professional light theme with blue accents
+Note: This file defines theme-specific colors that replace variables
+===============================================================================
+*/
 
-# src/config/__init__.py
-"""Configuration Package"""
-from .settings import AppSettings
-from .constants import *
+/* Main Application */
+QMainWindow {
+    background-color: #ffffff;
+}
 
-# src/utils/__init__.py  
-"""Utilities Package"""
-from .logger import setup_logging, get_logger, LoggerMixin
-from .exceptions import *
+QWidget {
+    background-color: transparent;
+    color: #212529;
+}
 
-# src/core/__init__.py
-"""Core Business Logic Package"""
-from .word_manager import WordManager
-from .pdf_handler import PDFHandler
-from .appendix_manager import AppendixManager
+/* Dialogs */
+QDialog {
+    background-color: #ffffff;
+}
 
-# src/gui/__init__.py
-"""GUI Package - will be populated later"""
+/* Message Boxes */
+QMessageBox {
+    background-color: #ffffff;
+}
 
-# src/gui/widgets/__init__.py
-"""GUI Widgets Package - will be populated later"""
+QMessageBox QLabel {
+    color: #212529;
+}
 
-# src/gui/dialogs/__init__.py
-"""GUI Dialogs Package - will be populated later"""
+QMessageBox QPushButton {
+    min-width: 80px;
+}
+
+/* File Dialog */
+QFileDialog {
+    background-color: #ffffff;
+    color: #212529;
+}
+
+/* Progress Dialog */
+QProgressDialog {
+    background-color: #ffffff;
+}
+
+/* Separator Lines */
+QFrame[frameShape="4"], QFrame[frameShape="5"] {
+    background-color: #e0e0e0;
+}
+
+/* Selection Colors */
+*:focus {
+    selection-background-color: #e3f2fd;
+    selection-color: #212529;
+}
+
+/* Disabled State */
+*:disabled {
+    color: #adb5bd;
+}
+
+/* Placeholder Text */
+QLineEdit, QTextEdit {
+    selection-background-color: #e3f2fd;
+    selection-color: #212529;
+}

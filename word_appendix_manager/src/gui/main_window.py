@@ -12,7 +12,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
     QLabel, QComboBox, QPushButton, QTextEdit, QProgressBar, 
-    QStatusBar, QMenuBar, QMenu, QGroupBox, QFrame, QMessageBox
+    QStatusBar, QMenuBar, QMenu, QGroupBox, QFrame, QMessageBox, QDialog
 )
 from PySide6.QtCore import Qt, QSize, Signal, QTimer
 from PySide6.QtGui import QAction, QIcon
@@ -24,7 +24,6 @@ from gui.widgets.appendix_list_widget import AppendixListWidget
 from gui.widgets.drag_drop_area import DragDropArea
 from gui.widgets.pdf_preview_widget import PDFPreviewWidget
 
-
 class MainWindow(QMainWindow, LoggerMixin):
     """Main application window."""
     
@@ -34,9 +33,10 @@ class MainWindow(QMainWindow, LoggerMixin):
     appendix_removed = Signal(int)       # Index of appendix to remove
     process_requested = Signal()         # Request to process appendices
     
-    def __init__(self, settings=None, parent=None):
+    def __init__(self, settings=None, theme_manager=None, parent=None):
         super().__init__(parent)
         self.settings = settings
+        self.theme_manager = theme_manager
         self.current_document = None
         self.appendix_data = []
         
@@ -48,6 +48,14 @@ class MainWindow(QMainWindow, LoggerMixin):
         self.apply_settings()
         
         self.logger.info("Main window initialized")
+
+    def on_theme_changed(self, theme_name: str):
+        """Handle theme change event."""
+        self.logger.info(f"Theme changed to: {theme_name}")
+        # The theme is already applied globally by ThemeManager
+        # We can add any window-specific updates here if needed
+        self.update()
+
     
     def setup_ui(self):
         """Set up the main user interface."""
@@ -355,6 +363,10 @@ class MainWindow(QMainWindow, LoggerMixin):
         # Settings connections
         self.numbering_combo.currentTextChanged.connect(self.on_numbering_changed)
         self.backup_checkbox.toggled.connect(self.on_backup_setting_changed)
+
+        # Theme manager connection
+        if self.theme_manager:
+            self.theme_manager.theme_changed.connect(self.on_theme_changed)
     
     def apply_settings(self):
         """Apply settings to the UI."""
@@ -684,10 +696,10 @@ class MainWindow(QMainWindow, LoggerMixin):
     
     def show_settings(self):
         """Show the settings dialog."""
-        from gui.dialogs import SettingsDialog
+        from gui.dialogs.settings_dialog import SettingsDialog
         
-        dialog = SettingsDialog(self.settings, self)
-        if dialog.exec() == dialog.Accepted:
+        dialog = SettingsDialog(self.settings, self.theme_manager, self)
+        if dialog.exec() == QDialog.Accepted:
             self.apply_settings()
             self.logger.info("Settings updated")
     

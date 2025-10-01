@@ -26,9 +26,10 @@ class SettingsDialog(QDialog, LoggerMixin):
     
     settings_changed = Signal()
     
-    def __init__(self, settings, parent=None):
+    def __init__(self, settings, theme_manager=None, parent=None):
         super().__init__(parent)
         self.settings = settings
+        self.theme_manager = theme_manager
         self.temp_settings = {}  # Store temporary changes
         
         self.setup_ui()
@@ -298,6 +299,18 @@ class SettingsDialog(QDialog, LoggerMixin):
         self.cancel_btn.clicked.connect(self.reject)
         self.apply_btn.clicked.connect(self.apply_settings)
         self.ok_btn.clicked.connect(self.accept_settings)
+
+        # Theme combo box - apply theme immediately on change 
+        self.theme_combo.currentTextChanged.connect(self.on_theme_combo_changed)
+
+    def on_theme_combo_changed(self, text: str):
+        """Handle theme combo box change - apply theme immediately."""
+        theme_map = {0: "light", 1: "dark", 2: "system"}
+        theme_name = theme_map.get(self.theme_combo.currentIndex(), "light")
+        
+        if self.theme_manager:
+            self.theme_manager.load_theme(theme_name)
+            self.logger.info(f"Theme preview: {theme_name}")
     
     def load_settings(self):
         """Load current settings into the dialog."""
@@ -392,7 +405,7 @@ class SettingsDialog(QDialog, LoggerMixin):
         current_font.setBold(heading_style.get('bold', True))
         current_font.setItalic(heading_style.get('italic', False))
         
-        font, ok = QFontDialog.getFont(current_font, self)
+        font, ok = QFontDialog.getFont(current_font, self)  
         if ok:
             self.font_label.setText(f"{font.family()}, {font.pointSize()}pt")
             
@@ -430,8 +443,15 @@ class SettingsDialog(QDialog, LoggerMixin):
         """Save settings from dialog to settings object."""
         # General settings
         theme_map = {0: "light", 1: "dark", 2: "system"}
-        self.settings.ui_theme = theme_map[self.theme_combo.currentIndex()]
+        theme_map = {0: "light", 1: "dark", 2: "system"}
+        theme_name = theme_map[self.theme_combo.currentIndex()]
+        self.settings.ui_theme = theme_name
         
+        # Save theme through theme manager
+        if self.theme_manager:
+            self.theme_manager.save_theme_preference(theme_name)
+            self.theme_manager.load_theme(theme_name)
+
         self.settings.set('ui.show_pdf_preview', self.show_preview_checkbox.isChecked())
         self.settings.set('ui.drag_drop_enabled', self.drag_drop_checkbox.isChecked())
         
